@@ -2,134 +2,10 @@
 
 import argparse
 import json
-import os
 import sys
-import urllib.error
-import urllib.parse
-import urllib.request
 from pathlib import Path
 
-
-API_BASE_URL = "https://app.asana.com/api/1.0"
-
-
-def load_dotenv(env_path: Path) -> None:
-    if not env_path.exists():
-        return
-
-    for raw_line in env_path.read_text().splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-
-        key, value = line.split("=", 1)
-        key = key.strip()
-        value = value.strip().strip("'").strip('"')
-        if key and key not in os.environ:
-            os.environ[key] = value
-
-
-def asana_get(path: str, token: str, params: dict[str, str] | None = None) -> dict:
-    query = ""
-    if params:
-        query = "?" + urllib.parse.urlencode(params)
-
-    request = urllib.request.Request(
-        f"{API_BASE_URL}{path}{query}",
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/json",
-        },
-        method="GET",
-    )
-
-    try:
-        with urllib.request.urlopen(request) as response:
-            return json.load(response)
-    except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(
-            f"Asana API request failed with HTTP {exc.code} for {path}: {body}"
-        ) from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(f"Unable to reach Asana API: {exc.reason}") from exc
-
-
-def paginate(path: str, token: str, params: dict[str, str] | None = None) -> list[dict]:
-    merged_params = dict(params or {})
-    merged_params.setdefault("limit", "100")
-
-    items: list[dict] = []
-    offset = None
-
-    while True:
-        page_params = dict(merged_params)
-        if offset:
-            page_params["offset"] = offset
-
-        payload = asana_get(path, token, page_params)
-        items.extend(payload.get("data", []))
-
-        next_page = payload.get("next_page")
-        if not next_page or not next_page.get("offset"):
-            break
-
-        offset = next_page["offset"]
-
-    return items
-
-
-def choose_workspace(workspaces: list[dict]) -> str:
-    if not workspaces:
-        raise RuntimeError("No workspaces are available for the configured Asana token.")
-
-    if len(workspaces) == 1:
-        workspace = workspaces[0]
-        print(
-            f"Using workspace {workspace['name']} ({workspace['gid']})",
-            file=sys.stderr,
-        )
-        return workspace["gid"]
-
-    if not sys.stdin.isatty():
-        names = ", ".join(
-            f"{workspace['name']} ({workspace['gid']})" for workspace in workspaces
-        )
-        raise RuntimeError(
-            "Multiple workspaces are available. Pass --workspace-gid or set "
-            f"ASANA_WORKSPACE_GID. Available: {names}"
-        )
-
-    print("Available workspaces:", file=sys.stderr)
-    for index, workspace in enumerate(workspaces, start=1):
-        print(
-            f"{index}. {workspace['name']} ({workspace['gid']})",
-            file=sys.stderr,
-        )
-
-    while True:
-        choice = input("Choose a workspace number: ").strip()
-        if not choice.isdigit():
-            print("Enter a valid number.", file=sys.stderr)
-            continue
-
-        selected_index = int(choice) - 1
-        if 0 <= selected_index < len(workspaces):
-            return workspaces[selected_index]["gid"]
-
-        print("Choice out of range.", file=sys.stderr)
-
-
-def resolve_workspace_gid(token: str, cli_workspace_gid: str | None) -> str:
-    if cli_workspace_gid:
-        return cli_workspace_gid
-
-    env_workspace_gid = os.environ.get("ASANA_WORKSPACE_GID")
-    if env_workspace_gid:
-        return env_workspace_gid
-
-    workspaces = paginate("/workspaces", token)
-    return choose_workspace(workspaces)
+from asana_utils import load_dotenv, paginate, require_access_token, resolve_workspace_gid
 
 
 def list_project_templates(token: str, workspace_gid: str) -> list[dict]:
@@ -167,9 +43,10 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    token = os.environ.get("ASANA_ACCESS_TOKEN")
-    if not token:
-        parser.error("ASANA_ACCESS_TOKEN is required in the environment or .env file.")
+    try:
+        token = require_access_token()
+    except RuntimeError as exc:
+        parser.error(str(exc))
 
     try:
         workspace_gid = resolve_workspace_gid(token, args.workspace_gid)
