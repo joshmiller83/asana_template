@@ -1,0 +1,172 @@
+{
+  "format_version": 1,
+  "export_strategy": "manual_v1",
+  "template": {
+    "name": "Incident Response Task",
+    "description": "AM checklist for flagship website downtime or performance incidents. Designed to prevent important steps from being skipped under pressure, not as a sequential workflow.",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183271",
+    "requested_dates": []
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "Incident Response Task v1"
+  },
+  "sections": [
+    {
+      "name": "On Alert",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Confirm you are the AM or BAM taking this incident",
+          "notes": "If you are the BAM stepping in because the AM is unavailable, note that in the Slack thread.",
+          "resource_subtype": "default_task",
+          "local_id": "confirm-am",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Open a thread in #web-developers-only \u2014 state you are on the problem",
+          "notes": "This is the incident's running log. All updates, findings, and decisions go here.",
+          "resource_subtype": "default_task",
+          "local_id": "open-slack-thread",
+          "dependency_refs": ["confirm-am"],
+          "subtasks": []
+        },
+        {
+          "name": "Senior Director(s) notified",
+          "notes": "Business hours: Slack @here or @channel, 5 minute wait. If no response after 5 minutes, text. Off-hours or non-work day: start the #web-developers-only thread and text Senior Directors directly.",
+          "resource_subtype": "default_task",
+          "local_id": "notify-senior-directors",
+          "dependency_refs": ["open-slack-thread"],
+          "subtasks": []
+        },
+        {
+          "name": "Senior Director posts to #urban-general",
+          "notes": "Message should say something like: \"We are aware that urban.org is experiencing downtime/performance issues. We will provide an update when this is resolved.\" This is their responsibility, not yours \u2014 but confirm it happens.",
+          "resource_subtype": "default_task",
+          "local_id": "urban-general-post",
+          "dependency_refs": ["notify-senior-directors"],
+          "subtasks": []
+        },
+        {
+          "name": "COMM team member assigned to keep incident timeline and notes",
+          "notes": "This is easy to assume someone else is handling. Confirm it explicitly.",
+          "resource_subtype": "default_task",
+          "local_id": "assign-comm-notetaker",
+          "dependency_refs": ["open-slack-thread"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Active Incident",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Check Pantheon status",
+          "notes": "Is the issue on Pantheon's end? Check their status page and any platform-level alerts before assuming it's a code or traffic problem.",
+          "resource_subtype": "default_task",
+          "local_id": "check-pantheon-status",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Check New Relic \u2014 identify onset and throughput pattern",
+          "notes": "Look for steep increases in traffic, error rate spikes, or response time degradation. When did it start? Is it getting worse?",
+          "resource_subtype": "default_task",
+          "local_id": "check-new-relic",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Check Cloudflare or nginx logs for problem IPs or unusual traffic patterns",
+          "notes": "Look for blocks of IPs hitting /search paths or other repeated patterns. Note any ASNs associated with the problem IPs.",
+          "resource_subtype": "default_task",
+          "local_id": "check-cloudflare-logs",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Identify incident type and apply mitigation steps",
+          "notes": "Known types:\n\n1. IP traversal of /search paths:\n   - Cloudflare: Turn on Attack Mode\n   - Drupal: Disable Search view, Facets, and Search block from Block Layout\n   - Cloudflare: Identify and block the ASN associated with problem IPs\n   - Drupal: Once stable, review and tighten rate limiting\n   - Schedule ASN block removal after enough time has passed\n\n2. Solr search outage (Pantheon Solr service failure):\n   - Confirm this is search-only, not a broader outage\n   - Drupal: Verify Solr server is active and connected\n   - Check that all search indexes are fully indexed\n   - Confirm Solr schema is current and meets minimum version\n   - If schema is outdated, update and re-index via drush (not Drupal UI \u2014 it will time out)\n   - If re-indexing fails: contact Pantheon Support immediately, notify Senior Director(s) and Associate Director of Web Development & Product Management, post in #web-developers-only\n\n3. Other: document findings in the Slack thread and escalate as needed.",
+          "resource_subtype": "default_task",
+          "local_id": "mitigation",
+          "dependency_refs": ["check-pantheon-status", "check-new-relic", "check-cloudflare-logs"],
+          "subtasks": []
+        },
+        {
+          "name": "Escalation check \u2014 does this need Pantheon Support?",
+          "notes": "Escalate to Pantheon if: re-indexing fails, the issue appears to be a platform-level Solr service failure, or you cannot identify or resolve the cause after initial mitigation steps.",
+          "resource_subtype": "default_task",
+          "local_id": "escalation-check",
+          "dependency_refs": ["mitigation"],
+          "subtasks": []
+        },
+        {
+          "name": "Post progress updates in #web-developers-only thread",
+          "notes": "Keep the thread current as findings and actions develop. Senior Directors need visibility to field questions from the rest of the organization.",
+          "resource_subtype": "default_task",
+          "local_id": "progress-updates",
+          "dependency_refs": ["open-slack-thread"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Resolution & Follow-Through",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Confirm site is stable before declaring resolution",
+          "notes": "Check New Relic \u2014 Web Transactions Time graph should be settled. Don't declare resolution while metrics are still elevated.",
+          "resource_subtype": "default_task",
+          "local_id": "confirm-stable",
+          "dependency_refs": ["mitigation"],
+          "subtasks": []
+        },
+        {
+          "name": "Post resolution update in #web-developers-only thread",
+          "notes": "Include: what the issue was, what was done to resolve it, and any ongoing monitoring or cleanup steps in progress.",
+          "resource_subtype": "default_task",
+          "local_id": "resolution-slack-update",
+          "dependency_refs": ["confirm-stable"],
+          "subtasks": []
+        },
+        {
+          "name": "Senior Director posts all-clear to #urban-general",
+          "notes": "Confirm this happens \u2014 same as the initial notification, this is their message to send, not yours.",
+          "resource_subtype": "default_task",
+          "local_id": "all-clear-urban-general",
+          "dependency_refs": ["confirm-stable"],
+          "subtasks": []
+        },
+        {
+          "name": "Any pending cleanup steps scheduled",
+          "notes": "Examples: remove ASN blocks after enough time has passed, re-enable any Drupal features that were disabled during mitigation (Search view, Facets, Search block), review rate limiting strategy.",
+          "resource_subtype": "default_task",
+          "local_id": "cleanup-steps",
+          "dependency_refs": ["confirm-stable"],
+          "subtasks": []
+        },
+        {
+          "name": "Jira ticket created and linked in Slack thread",
+          "notes": "Document the incident: onset time, alert source, what was found, what was done, time to resolution. This is the record for future reference and pattern tracking.",
+          "resource_subtype": "default_task",
+          "local_id": "jira-ticket",
+          "dependency_refs": ["confirm-stable"],
+          "subtasks": []
+        },
+        {
+          "name": "Brief retrospective note added to Jira \u2014 what would have made this faster or easier?",
+          "notes": "Even one sentence is useful. This is how the playbook improves over time.",
+          "resource_subtype": "default_task",
+          "local_id": "retrospective",
+          "dependency_refs": ["jira-ticket"],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}
