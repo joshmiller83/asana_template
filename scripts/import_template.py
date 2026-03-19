@@ -392,7 +392,7 @@ def build_project_from_template(token: str, template_data: dict) -> tuple[dict, 
 
 
 def import_template(
-    token: str, template_path: Path, *, keep_project: bool = False
+    token: str, template_path: Path, *, keep_project: bool = True
 ) -> tuple[dict, dict]:
     template_data = load_template(template_path)
     errors = validate_template_for_import(template_data)
@@ -430,9 +430,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to the edited template.json file to import.",
     )
     parser.add_argument(
-        "--keep-project",
+        "--delete-project",
         action="store_true",
-        help="Keep the temporary working project instead of deleting it after template creation.",
+        help="Delete the temporary working project after the new template is fully materialized.",
     )
     return parser
 
@@ -447,7 +447,7 @@ def main() -> int:
     try:
         token = require_access_token()
         project, job = import_template(
-            token, Path(args.template_json), keep_project=args.keep_project
+            token, Path(args.template_json), keep_project=not args.delete_project
         )
     except RuntimeError as exc:
         print(str(exc), file=sys.stderr)

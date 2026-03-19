@@ -666,6 +666,7 @@ The planned importer is expected to work roughly like this:
 5. Create subtasks.
 6. Recreate dependency links in a later pass after new task ids exist.
 7. Save the result as a new versioned Asana template.
+8. Keep the working project until the new template has clearly finished copying, then delete it manually or with an explicit cleanup step.
 
 Because of that design, these fields are especially important:
 

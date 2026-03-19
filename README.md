@@ -160,7 +160,7 @@ python3 scripts/import_template.py templates/deployment-task/template.json
 
 Options:
 
-- `--keep-project` to retain the temporary working project after template creation
+- `--delete-project` to delete the temporary working project after template creation
 
 Behavior:
 
@@ -168,12 +168,14 @@ Behavior:
 - creates a new working project in the resolved workspace
 - recreates sections, tasks, subtasks, and supported dependency links
 - saves the working project as a new Asana template using `import.version_name_template`
-- deletes the temporary working project by default after template creation
+- keeps the working project by default so the user can delete it manually after verifying the template copy completed
+- optionally deletes the temporary working project if `--delete-project` is passed
 
 Current note:
 
 - if the stored `template.workspace_gid` does not match an accessible real workspace gid, the importer falls back to resolving the workspace by `template.workspace_name`
 - for brand-new v1 templates, use `local_id` plus `dependency_refs` when you need dependencies before any Asana gids exist
+- current recommendation is to delete working projects manually after confirming Asana has finished copying the template
 
 ## Tests
 
