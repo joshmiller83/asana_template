@@ -148,6 +148,30 @@ Behavior:
 - it writes a local snapshot
 - by default it deletes the temporary project when the export is complete
 
+### `import_template.py`
+
+Imports an edited `template.json` into Asana as a new versioned project template.
+
+```bash
+python3 scripts/import_template.py templates/deployment-task/template.json
+```
+
+Options:
+
+- `--keep-project` to retain the temporary working project after template creation
+
+Behavior:
+
+- validates the edited JSON before import
+- creates a new working project in the resolved workspace
+- recreates sections, tasks, subtasks, and supported dependency links
+- saves the working project as a new Asana template using `import.version_name_template`
+- deletes the temporary working project by default after template creation
+
+Current note:
+
+- if the stored `template.workspace_gid` does not match an accessible real workspace gid, the importer falls back to resolving the workspace by `template.workspace_name`
+
 ## Tests
 
 Run the stdlib test suite with:

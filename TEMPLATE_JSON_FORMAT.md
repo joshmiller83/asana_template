@@ -179,6 +179,12 @@ Editing guidance:
 - do not remove
 - do not change unless the import target really is a different workspace
 
+Current implementation note:
+
+- some exported templates currently carry a team-like gid here rather than a real workspace gid
+- the importer compensates by resolving the real workspace from accessible workspaces and `template.workspace_name`
+- still preserve this field; do not delete it
+
 #### `template.requested_dates`
 
 This is an array of required date variables the source template expects during instantiation.

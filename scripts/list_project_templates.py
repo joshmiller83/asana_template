@@ -5,7 +5,10 @@ import json
 import sys
 from pathlib import Path
 
-from asana_utils import load_dotenv, paginate, require_access_token, resolve_workspace_gid
+try:
+    from .asana_utils import load_dotenv, paginate, require_access_token, resolve_workspace_gid
+except ImportError:
+    from asana_utils import load_dotenv, paginate, require_access_token, resolve_workspace_gid
 
 
 def list_project_templates(token: str, workspace_gid: str) -> list[dict]:

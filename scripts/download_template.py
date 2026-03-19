@@ -5,18 +5,42 @@ import json
 from datetime import date
 from pathlib import Path
 
-from asana_utils import (
-    asana_delete,
-    asana_get,
-    asana_post,
-    load_dotenv,
-    paginate,
-    require_access_token,
-    resolve_workspace_gid,
-    slugify,
-    wait_for_job,
-)
-from template_format import build_editable_template, build_requested_dates, render_outline, simplify_task
+try:
+    from .asana_utils import (
+        asana_delete,
+        asana_get,
+        asana_post,
+        load_dotenv,
+        paginate,
+        require_access_token,
+        resolve_workspace_gid,
+        slugify,
+        wait_for_job,
+    )
+    from .template_format import (
+        build_editable_template,
+        build_requested_dates,
+        render_outline,
+        simplify_task,
+    )
+except ImportError:
+    from asana_utils import (
+        asana_delete,
+        asana_get,
+        asana_post,
+        load_dotenv,
+        paginate,
+        require_access_token,
+        resolve_workspace_gid,
+        slugify,
+        wait_for_job,
+    )
+    from template_format import (
+        build_editable_template,
+        build_requested_dates,
+        render_outline,
+        simplify_task,
+    )
 
 
 def list_project_templates(token: str, workspace_gid: str) -> list[dict]:
