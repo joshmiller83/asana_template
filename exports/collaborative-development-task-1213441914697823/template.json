@@ -1,0 +1,325 @@
+{
+  "format_version": 1,
+  "exported_at": "2026-03-19T21:50:53.731060+00:00",
+  "export_strategy": "instantiate_project_template",
+  "template": {
+    "name": "Collaborative Development Task",
+    "description": "",
+    "source_gid": "1213441914697823",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183271",
+    "requested_dates": [
+      {
+        "gid": "1",
+        "name": "Start Date",
+        "description": "Choose a start date for your project.",
+        "value": "2026-03-19"
+      }
+    ]
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "Collaborative Development Task vNEXT",
+    "source_template_gid": "1213441914697823"
+  },
+  "instantiated_project": {
+    "name": "Collaborative Development Task [export snapshot]",
+    "source_gid": "1213754294945032"
+  },
+  "sections": [
+    {
+      "name": "Untitled section",
+      "source_gid": "1213754294965224",
+      "tasks": []
+    },
+    {
+      "name": "Initiating",
+      "source_gid": "1213752650464443",
+      "tasks": [
+        {
+          "name": "Confirm ticket exists, is assigned, authorized, and aligned with broader goals",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562651541",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Verify budget approval",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295061554",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Identify Stakeholders - who needs to be consulted or informed?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295061560",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Planning",
+      "source_gid": "1213752650464445",
+      "tasks": [
+        {
+          "name": "Surface scope or timeline uncertainty to the right person before work begins",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357302923",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Document Existing Solution, Scope, Acceptance criteria, Technical, Estimate, Deadline, QC, and Deployment",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357276236",
+          "dependency_source_gids": [
+            "1213754562651541"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Risk identification \u2014 what could go wrong or cause a delay?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357272894",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "If bug, verify repeatable",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357302918",
+          "dependency_source_gids": [
+            "1213754562651541"
+          ],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring & Controlling",
+      "source_gid": "1213752650464447",
+      "tasks": [
+        {
+          "name": "Document decisions and scope changes in Jira as they happen",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562651547",
+          "dependency_source_gids": [
+            "1213754562651541"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Check regularly: still on scope, on track, and no active risks? If not, escalate before it compounds.",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357272899",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Executing",
+      "source_gid": "1213752650464449",
+      "tasks": [
+        {
+          "name": "Jira ticket status updated to In Progress",
+          "notes": "",
+          "resource_subtype": "milestone",
+          "source_gid": "1213754562651533",
+          "dependency_source_gids": [
+            "1213752357276236",
+            "1213754295061554",
+            "1213754562651541"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Can you create a small automated test that fails?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357302928",
+          "dependency_source_gids": [
+            "1213754562651533"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Implement the solution",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357302933",
+          "dependency_source_gids": [
+            "1213752357276236",
+            "1213752357302918",
+            "1213754562651541"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Verified: anonymous, empty state, and no regression against existing implementation.",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357302938",
+          "dependency_source_gids": [
+            "1213752357302933",
+            "1213754562651533"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Code formatting and comments follow standards",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562651553",
+          "dependency_source_gids": [
+            "1213752357302938"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Confirm automated test (if it exists) now passes",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562651559",
+          "dependency_source_gids": [
+            "1213752357302928",
+            "1213754562651533"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Diffy run completed and passing.",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295061548",
+          "dependency_source_gids": [
+            "1213752357302933"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Branch and PR follow naming conventions (JIRA-TICKET-NUM format)",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357302943",
+          "dependency_source_gids": [
+            "1213754562651533"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Testing instructions, screenshots, and multidev links prepared for QC request",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752650471407",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Reviewers assigned in GitHub and notified via Slack with PR link",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752650471389",
+          "dependency_source_gids": [
+            "1213752650471407"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Jira ticket status moved to Code Review",
+          "notes": "",
+          "resource_subtype": "milestone",
+          "source_gid": "1213752650471394",
+          "dependency_source_gids": [
+            "1213752357302933",
+            "1213752650471389",
+            "1213752650471407"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "PR approved \u2014 all review comments resolved.",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752650471401",
+          "dependency_source_gids": [
+            "1213752357302933",
+            "1213752650471389"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "Jira ticket status updated to QC/Test",
+          "notes": "",
+          "resource_subtype": "milestone",
+          "source_gid": "1213752650471413",
+          "dependency_source_gids": [
+            "1213752650471394",
+            "1213752650471401"
+          ],
+          "subtasks": []
+        },
+        {
+          "name": "QC Passes",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357305121",
+          "dependency_source_gids": [
+            "1213752650471413"
+          ],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Closing",
+      "source_gid": "1213752650464451",
+      "tasks": [
+        {
+          "name": "Brief retrospective note logged in Jira \u2014 anything worth carrying forward to the next task?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357272904",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Deployment task created and linked",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357305106",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "(optional) PR branch deleted / Or (approved) added to PR",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357305111",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Follow up tasks created, if needed",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213752357305116",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}

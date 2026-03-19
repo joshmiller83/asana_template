@@ -1,0 +1,214 @@
+{
+  "format_version": 1,
+  "exported_at": "2026-03-19T21:51:35.352950+00:00",
+  "export_strategy": "instantiate_project_template",
+  "template": {
+    "name": "Management Planning Task",
+    "description": "",
+    "source_gid": "1213485146730294",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183271",
+    "requested_dates": []
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "Management Planning Task vNEXT",
+    "source_template_gid": "1213485146730294"
+  },
+  "instantiated_project": {
+    "name": "Management Planning Task [export snapshot]",
+    "source_gid": "1213752357363714"
+  },
+  "sections": [
+    {
+      "name": "Untitled section",
+      "source_gid": "1213752650542259",
+      "tasks": []
+    },
+    {
+      "name": "Discovery",
+      "source_gid": "1213753868378092",
+      "tasks": [
+        {
+          "name": "Jira ticket exists, is assigned, and status is updated",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868380392",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Purpose of this task is clear \u2014 what decision or deliverable does it produce?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868380397",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Identify who needs to be consulted or informed (Jess? Dave? Sam?)",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868380402",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Confirm deadline \u2014 is there a 1x1 or meeting this feeds into?\n",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868380407",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Document any known constraints or open questions in Jira",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868380412",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Plan Alignment",
+      "source_gid": "1213753868378094",
+      "tasks": [
+        {
+          "name": "Identify what \"done\" looks like for this task \u2014 what is the actual output?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868380417",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Identify 2\u20133 possible approaches or framings if there's ambiguity",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562742868",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "If scope or timeline is uncertain, surface that to Jess before starting",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562742873",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Confirm any dependencies (waiting on someone else's input, a doc, a meeting, etc.)",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562742878",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "The Work",
+      "source_gid": "1213753868378096",
+      "tasks": [
+        {
+          "name": "Jira status updated to In Progress",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562742883",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Document progress at the halfway point as a Jira comment",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562742889",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Draft produced \u2014 keep it short unless scope explicitly requires more",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562742895",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Does this require someone else's review before it goes to Jess? If so, send it.",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295118923",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Self-review: Is the framing clear? Is the ask or recommendation obvious?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295118929",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Is the tone collaborative \u2014 presenting options and inviting feedback, not declaring conclusions?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295118935",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Delivery & Follow-Through",
+      "source_gid": "1213753868378098",
+      "tasks": [
+        {
+          "name": "Shared with the right person(s) ahead of the relevant meeting or deadline",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868330059",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Meeting or conversation held to review it",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868330065",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Notes from that conversation logged in Jira",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868385670",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Next steps or follow-on tickets created if needed",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868385676",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Jira status updated to Done (or blocker with a note, if something's unresolved)",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213753868385682",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}

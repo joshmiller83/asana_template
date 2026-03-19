@@ -1,0 +1,79 @@
+{
+  "format_version": 1,
+  "exported_at": "2026-03-19T21:51:45.205775+00:00",
+  "export_strategy": "instantiate_project_template",
+  "template": {
+    "name": "Setup Diffy for website",
+    "description": "",
+    "source_gid": "1213441914697819",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183271",
+    "requested_dates": []
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "Setup Diffy for website vNEXT",
+    "source_template_gid": "1213441914697819"
+  },
+  "instantiated_project": {
+    "name": "Setup Diffy for website [export snapshot]",
+    "source_gid": "1213754562543061"
+  },
+  "sections": [
+    {
+      "name": "Untitled section",
+      "source_gid": "1213754562543089",
+      "tasks": [
+        {
+          "name": "Verify all key landing pages are added to Diffy",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295137528",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Verify all listing pages are added to Diffy",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562765550",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Add 2-3 pages per Content Type",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562765556",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Add important admin pages",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562765562",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Add custom JS and CSS to simular normal interactive behavior",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562765568",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Set up Daily Monitoring and Slack integration",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754562765574",
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}
