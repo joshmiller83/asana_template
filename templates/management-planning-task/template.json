@@ -12,7 +12,7 @@
   },
   "import": {
     "mode": "create_new_versioned_template",
-    "version_name_template": "Management Planning Task vNEXT",
+    "version_name_template": "Management Planning Task v2",
     "source_template_gid": "1213485146730294"
   },
   "instantiated_project": {
@@ -26,11 +26,11 @@
       "tasks": []
     },
     {
-      "name": "Discovery",
+      "name": "Initiating",
       "source_gid": "1213753868378092",
       "tasks": [
         {
-          "name": "Jira ticket exists, is assigned, and status is updated",
+          "name": "Ticket exists, is assigned, and authorized \u2014 purpose and deliverable are clear",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868380392",
@@ -38,15 +38,7 @@
           "subtasks": []
         },
         {
-          "name": "Purpose of this task is clear \u2014 what decision or deliverable does it produce?",
-          "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": "1213753868380397",
-          "dependency_source_gids": [],
-          "subtasks": []
-        },
-        {
-          "name": "Identify who needs to be consulted or informed (Jess? Dave? Sam?)",
+          "name": "Stakeholders identified \u2014 who needs to be consulted or informed, and what is their interest or influence on the outcome?",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868380402",
@@ -54,7 +46,7 @@
           "subtasks": []
         },
         {
-          "name": "Confirm deadline \u2014 is there a 1x1 or meeting this feeds into?\n",
+          "name": "Deadline confirmed \u2014 is there a 1x1 or meeting this feeds into?",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868380407",
@@ -62,7 +54,7 @@
           "subtasks": []
         },
         {
-          "name": "Document any known constraints or open questions in Jira",
+          "name": "Known constraints or open questions documented in Jira",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868380412",
@@ -72,19 +64,19 @@
       ]
     },
     {
-      "name": "Plan Alignment",
+      "name": "Planning",
       "source_gid": "1213753868378094",
       "tasks": [
         {
-          "name": "Identify what \"done\" looks like for this task \u2014 what is the actual output?",
-          "notes": "",
+          "name": "Definition of done established \u2014 what is the actual output, and who formally accepts it?",
+          "notes": "Acceptance criteria should answer: what does the relevant stakeholder need to say yes to, and on what basis? A presented deck, a written recommendation, a decision reached in the meeting?",
           "resource_subtype": "default_task",
           "source_gid": "1213753868380417",
           "dependency_source_gids": [],
           "subtasks": []
         },
         {
-          "name": "Identify 2\u20133 possible approaches or framings if there's ambiguity",
+          "name": "2\u20133 approaches or framings identified and communicated \u2014 options presented, not conclusions declared",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754562742868",
@@ -92,7 +84,7 @@
           "subtasks": []
         },
         {
-          "name": "If scope or timeline is uncertain, surface that to Jess before starting",
+          "name": "If scope or timeline is uncertain, surface that before starting",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754562742873",
@@ -100,17 +92,25 @@
           "subtasks": []
         },
         {
-          "name": "Confirm any dependencies (waiting on someone else's input, a doc, a meeting, etc.)",
+          "name": "Dependencies confirmed \u2014 waiting on input, a doc, or a meeting before this can proceed?",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754562742878",
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Risk identification \u2014 what could block, delay, or land poorly with stakeholders?",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
           "dependency_source_gids": [],
           "subtasks": []
         }
       ]
     },
     {
-      "name": "The Work",
+      "name": "Executing",
       "source_gid": "1213753868378096",
       "tasks": [
         {
@@ -122,7 +122,7 @@
           "subtasks": []
         },
         {
-          "name": "Document progress at the halfway point as a Jira comment",
+          "name": "Progress documented in Jira at a meaningful interval",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754562742889",
@@ -138,7 +138,7 @@
           "subtasks": []
         },
         {
-          "name": "Does this require someone else's review before it goes to Jess? If so, send it.",
+          "name": "Peer review completed if needed before delivery",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754295118923",
@@ -146,25 +146,39 @@
           "subtasks": []
         },
         {
-          "name": "Self-review: Is the framing clear? Is the ask or recommendation obvious?",
+          "name": "Self-review against definition of done \u2014 framing clear, ask or recommendation obvious, tone collaborative, acceptance criteria met",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754295118929",
-          "dependency_source_gids": [],
-          "subtasks": []
-        },
-        {
-          "name": "Is the tone collaborative \u2014 presenting options and inviting feedback, not declaring conclusions?",
-          "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": "1213754295118935",
           "dependency_source_gids": [],
           "subtasks": []
         }
       ]
     },
     {
-      "name": "Delivery & Follow-Through",
+      "name": "Monitoring & Controlling",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Decisions and scope changes documented in Jira as they happen",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "dependency_source_gids": [],
+          "subtasks": []
+        },
+        {
+          "name": "Still on scope, on track, and no active risks? If not, escalate before it compounds",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "dependency_source_gids": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Closing",
       "source_gid": "1213753868378098",
       "tasks": [
         {
@@ -184,7 +198,7 @@
           "subtasks": []
         },
         {
-          "name": "Notes from that conversation logged in Jira",
+          "name": "Outcome and any decisions logged in Jira \u2014 not just notes, but what was resolved or agreed",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868385670",
@@ -192,7 +206,7 @@
           "subtasks": []
         },
         {
-          "name": "Next steps or follow-on tickets created if needed",
+          "name": "Follow-on tickets created and Jira status updated to Done (or blocker noted if unresolved)",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868385676",
@@ -200,10 +214,10 @@
           "subtasks": []
         },
         {
-          "name": "Jira status updated to Done (or blocker with a note, if something's unresolved)",
+          "name": "Brief retrospective logged \u2014 did the framing land, was a decision reached, anything to carry forward?",
           "notes": "",
           "resource_subtype": "default_task",
-          "source_gid": "1213753868385682",
+          "source_gid": null,
           "dependency_source_gids": [],
           "subtasks": []
         }
