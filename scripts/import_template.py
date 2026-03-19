@@ -31,17 +31,30 @@ def load_template(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
-def collect_known_task_source_gids(template_data: dict) -> set[str]:
+def task_reference_keys(task: dict) -> list[str]:
+    refs = []
+    if task.get("source_gid"):
+        refs.append(task["source_gid"])
+    if task.get("local_id"):
+        refs.append(task["local_id"])
+    return refs
+
+
+def dependency_refs_for_task(task: dict) -> list[str]:
+    if "dependency_refs" in task:
+        return task.get("dependency_refs", [])
+    return task.get("dependency_source_gids", [])
+
+
+def collect_known_task_refs(template_data: dict) -> set[str]:
     known: set[str] = set()
 
     def collect_task(task: dict) -> None:
-        source_gid = task.get("source_gid")
-        if source_gid:
-            known.add(source_gid)
+        for ref in task_reference_keys(task):
+            known.add(ref)
         for subtask in task.get("subtasks", []):
-            subtask_gid = subtask.get("source_gid")
-            if subtask_gid:
-                known.add(subtask_gid)
+            for ref in task_reference_keys(subtask):
+                known.add(ref)
 
     for section in template_data.get("sections", []):
         for task in section.get("tasks", []):
@@ -70,26 +83,40 @@ def validate_template_for_import(template_data: dict) -> list[str]:
     if not import_block.get("version_name_template"):
         errors.append("import.version_name_template is required.")
 
-    known_source_gids = collect_known_task_source_gids(template_data)
+    known_refs = collect_known_task_refs(template_data)
+    seen_refs: set[str] = set()
 
     def validate_task(task: dict, location: str) -> None:
         if not task.get("name"):
             errors.append(f"{location} is missing a task name.")
 
-        for dependency_gid in task.get("dependency_source_gids", []):
-            if dependency_gid not in known_source_gids:
+        refs = task_reference_keys(task)
+        for ref in refs:
+            if ref in seen_refs:
+                errors.append(f"{location} reuses identifier {ref!r}; task references must be unique.")
+            seen_refs.add(ref)
+
+        for dependency_ref in dependency_refs_for_task(task):
+            if dependency_ref not in known_refs:
                 errors.append(
-                    f"{location} has dependency_source_gid {dependency_gid} that does not exist in this template."
+                    f"{location} has dependency reference {dependency_ref} that does not exist in this template."
                 )
 
         for index, subtask in enumerate(task.get("subtasks", []), start=1):
             subtask_location = f"{location}.subtasks[{index}]"
             if not subtask.get("name"):
                 errors.append(f"{subtask_location} is missing a subtask name.")
-            for dependency_gid in subtask.get("dependency_source_gids", []):
-                if dependency_gid not in known_source_gids:
+            subtask_refs = task_reference_keys(subtask)
+            for ref in subtask_refs:
+                if ref in seen_refs:
                     errors.append(
-                        f"{subtask_location} has dependency_source_gid {dependency_gid} that does not exist in this template."
+                        f"{subtask_location} reuses identifier {ref!r}; task references must be unique."
+                    )
+                seen_refs.add(ref)
+            for dependency_ref in dependency_refs_for_task(subtask):
+                if dependency_ref not in known_refs:
+                    errors.append(
+                        f"{subtask_location} has dependency reference {dependency_ref} that does not exist in this template."
                     )
 
     for section_index, section in enumerate(template_data.get("sections", []), start=1):
@@ -254,7 +281,7 @@ def initialize_sections(
 def build_project_from_template(token: str, template_data: dict) -> tuple[dict, dict[str, str]]:
     project = create_project(token, template_data)
     workspace_gid = resolve_import_workspace_gid(token, template_data)
-    source_to_new_gid: dict[str, str] = {}
+    ref_to_new_gid: dict[str, str] = {}
     deferred_dependencies: list[tuple[str, list[str]]] = []
 
     desired_sections, created_sections = initialize_sections(token, project["gid"], template_data)
@@ -272,21 +299,23 @@ def build_project_from_template(token: str, template_data: dict) -> tuple[dict, 
             )
             previous_task_gid = created_task["gid"]
 
-            if task_data.get("source_gid"):
-                source_to_new_gid[task_data["source_gid"]] = created_task["gid"]
+            for ref in task_reference_keys(task_data):
+                ref_to_new_gid[ref] = created_task["gid"]
 
-            if task_data.get("dependency_source_gids"):
+            task_dependency_refs = dependency_refs_for_task(task_data)
+            if task_dependency_refs:
                 deferred_dependencies.append(
-                    (created_task["gid"], task_data["dependency_source_gids"])
+                    (created_task["gid"], task_dependency_refs)
                 )
 
             for subtask_data in task_data.get("subtasks", []):
                 created_subtask = create_subtask(token, created_task["gid"], subtask_data)
-                if subtask_data.get("source_gid"):
-                    source_to_new_gid[subtask_data["source_gid"]] = created_subtask["gid"]
-                if subtask_data.get("dependency_source_gids"):
+                for ref in task_reference_keys(subtask_data):
+                    ref_to_new_gid[ref] = created_subtask["gid"]
+                subtask_dependency_refs = dependency_refs_for_task(subtask_data)
+                if subtask_dependency_refs:
                     deferred_dependencies.append(
-                        (created_subtask["gid"], subtask_data["dependency_source_gids"])
+                        (created_subtask["gid"], subtask_dependency_refs)
                     )
 
     previous_task_gid = None
@@ -301,32 +330,34 @@ def build_project_from_template(token: str, template_data: dict) -> tuple[dict, 
         )
         previous_task_gid = created_task["gid"]
 
-        if task_data.get("source_gid"):
-            source_to_new_gid[task_data["source_gid"]] = created_task["gid"]
+        for ref in task_reference_keys(task_data):
+            ref_to_new_gid[ref] = created_task["gid"]
 
-        if task_data.get("dependency_source_gids"):
+        task_dependency_refs = dependency_refs_for_task(task_data)
+        if task_dependency_refs:
             deferred_dependencies.append(
-                (created_task["gid"], task_data["dependency_source_gids"])
+                (created_task["gid"], task_dependency_refs)
             )
 
         for subtask_data in task_data.get("subtasks", []):
             created_subtask = create_subtask(token, created_task["gid"], subtask_data)
-            if subtask_data.get("source_gid"):
-                source_to_new_gid[subtask_data["source_gid"]] = created_subtask["gid"]
-            if subtask_data.get("dependency_source_gids"):
+            for ref in task_reference_keys(subtask_data):
+                ref_to_new_gid[ref] = created_subtask["gid"]
+            subtask_dependency_refs = dependency_refs_for_task(subtask_data)
+            if subtask_dependency_refs:
                 deferred_dependencies.append(
-                    (created_subtask["gid"], subtask_data["dependency_source_gids"])
+                    (created_subtask["gid"], subtask_dependency_refs)
                 )
 
-    for task_gid, dependency_source_gids in deferred_dependencies:
+    for task_gid, dependency_refs in deferred_dependencies:
         resolved_dependency_gids = [
-            source_to_new_gid[dependency_source_gid]
-            for dependency_source_gid in dependency_source_gids
-            if dependency_source_gid in source_to_new_gid
+            ref_to_new_gid[dependency_ref]
+            for dependency_ref in dependency_refs
+            if dependency_ref in ref_to_new_gid
         ]
         add_dependencies(token, task_gid, resolved_dependency_gids)
 
-    return project, source_to_new_gid
+    return project, ref_to_new_gid
 
 
 def import_template(

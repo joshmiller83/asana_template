@@ -346,7 +346,9 @@ Field meaning:
 - `notes`: task notes/body
 - `resource_subtype`: task type
 - `source_gid`: exported task gid from the temporary instantiated project
+- `local_id`: local identifier for brand-new tasks that have never existed in Asana
 - `dependency_source_gids`: predecessor task gids from the same exported graph
+- `dependency_refs`: predecessor references that may point to either `source_gid` or `local_id`
 - `subtasks`: ordered subtask list
 
 ### Editable task fields
@@ -356,6 +358,7 @@ These are intended to be safely editable:
 - `name`
 - `notes`
 - `resource_subtype`
+- `local_id`
 - `subtasks`
 - task order inside the section
 
@@ -384,19 +387,52 @@ Editing guidance:
 - for a brand new task you add manually, omit `source_gid` or set it to `null`
 - do not reuse another task’s `source_gid`
 
+### `local_id`
+
+Purpose:
+
+- gives a brand-new task a stable local identity before it has any Asana gid
+- makes dependency recreation possible for v1 templates and other newly added tasks
+
+Editing guidance:
+
+- use a unique string within the file
+- keep it stable once other tasks depend on it
+- do not reuse the same `local_id` on multiple tasks or subtasks
+
+Examples:
+
+- `kickoff`
+- `plan-options`
+- `close-retro`
+
 ### `dependency_source_gids`
 
-This is the key dependency field.
+Legacy meaning:
+
+- predecessor references using exported Asana `source_gid` values
+
+This field is still supported for backward compatibility with exported templates.
+
+### `dependency_refs`
+
+Preferred meaning:
+
+- predecessor references that can point to either:
+  - an existing task `source_gid`
+  - a new task `local_id`
+
+For newly authored v1 templates, prefer `dependency_refs`.
 
 Meaning:
 
-- the current task depends on the tasks referenced by these gids
-- each gid should refer to another task from the same exported template graph
+- the current task depends on the tasks referenced by these identifiers
+- each reference should refer to another task from the same template file
 
 If task `B` has:
 
 ```json
-"dependency_source_gids": ["gid-of-A"]
+"dependency_refs": ["task-a"]
 ```
 
 that means:
@@ -406,7 +442,7 @@ that means:
 
 Editing guidance:
 
-- use predecessor task `source_gid` values here
+- use predecessor task `source_gid` or `local_id` values here
 - keep the array flat
 - do not put section gids here
 - do not put template gids here
@@ -417,6 +453,7 @@ Safe edits:
 
 - add or remove dependency references between existing exported tasks
 - preserve the exact gid strings when referencing exported tasks
+- for brand-new tasks, add a `local_id` and reference that from `dependency_refs`
 
 Risky or currently experimental edits:
 
@@ -434,7 +471,8 @@ Why this is tricky:
 Practical rule for now:
 
 - dependencies between existing exported tasks are the safest case
-- edits involving brand new tasks and dependencies are expected but still experimental until importer support is finished
+- dependencies between brand-new tasks with unique `local_id` values are now supported by the importer
+- edits involving brand new subtasks with dependency references are supported by the same reference model, but are still a little more experimental than top-level tasks
 
 ## Subtasks
 
@@ -447,8 +485,9 @@ Each subtask currently uses the same core shape:
   "name": "Write tests",
   "notes": "",
   "resource_subtype": "default_task",
+  "local_id": "write-tests",
   "source_gid": "1213759999999999",
-  "dependency_source_gids": []
+  "dependency_refs": []
 }
 ```
 
@@ -457,6 +496,7 @@ Editing guidance:
 - subtask order is meaningful
 - renaming and editing notes is safe
 - for brand new subtasks, omit `source_gid` or set it to `null`
+- use `local_id` if another task or subtask needs to depend on the new subtask
 
 Important limitation:
 
@@ -498,8 +538,6 @@ These edits should be reasonable for the importer to support:
 
 These may work later, but should be treated carefully:
 
-- dependencies involving brand new tasks with no `source_gid`
-- dependencies involving brand new subtasks
 - changing `source_gid` values
 - changing `workspace_gid`
 - deleting requested date entries
@@ -529,8 +567,9 @@ Example:
   "name": "Prepare release notes",
   "notes": "",
   "resource_subtype": "default_task",
+  "local_id": "prepare-release-notes",
   "source_gid": null,
-  "dependency_source_gids": [],
+  "dependency_refs": [],
   "subtasks": []
 }
 ```
@@ -542,7 +581,7 @@ If task `Implement the solution` should depend on `If bug, verify repeatable`, a
 ```json
 {
   "name": "Implement the solution",
-  "dependency_source_gids": [
+  "dependency_refs": [
     "1213752357276236",
     "1213752357302918",
     "1213754562651541"
@@ -551,6 +590,25 @@ If task `Implement the solution` should depend on `If bug, verify repeatable`, a
 ```
 
 The actual gids must match existing task `source_gid` values from the same file.
+
+### Add a dependency between brand-new tasks in a v1 template
+
+Example:
+
+```json
+{
+  "name": "Draft recommendation",
+  "local_id": "draft-recommendation",
+  "dependency_refs": []
+},
+{
+  "name": "Review recommendation",
+  "local_id": "review-recommendation",
+  "dependency_refs": ["draft-recommendation"]
+}
+```
+
+In a v1 template, this is the preferred dependency pattern.
 
 ## How To Remove Content
 
@@ -561,7 +619,7 @@ The actual gids must match existing task `source_gid` values from the same file.
 ### Remove a task
 
 - remove the task object from its array
-- also remove its `source_gid` from any other task’s `dependency_source_gids`
+- also remove its `source_gid` or `local_id` from any other task’s dependency array
 
 This is important.
 
@@ -590,9 +648,10 @@ If you use an LLM to edit these files, give it rules like:
 - preserve valid JSON
 - preserve all existing `source_gid` values for existing objects
 - do not invent new `source_gid` values
+- use unique `local_id` values for new tasks that need to be referenced by dependencies
 - set `source_gid` to `null` or omit it for newly created tasks and sections
-- preserve `dependency_source_gids` unless intentionally changing dependencies
-- if removing a task, also remove references to its gid from all `dependency_source_gids` arrays
+- preserve dependency arrays unless intentionally changing dependencies
+- if removing a task, also remove references to its `source_gid` or `local_id` from all dependency arrays
 - do not edit `format_version`
 - do not use `outline.md` as the source of truth
 
@@ -615,7 +674,8 @@ Because of that design, these fields are especially important:
 - `template.requested_dates[*].value`
 - `import.version_name_template`
 - all existing task `source_gid` values
-- all `dependency_source_gids` references
+- all new task `local_id` values
+- all dependency references
 
 ## Short Version
 
@@ -625,7 +685,54 @@ If you want the best chance of successful import:
 - keep existing `source_gid` values
 - never invent new `source_gid` values
 - use `null` or omit `source_gid` for new sections, tasks, and subtasks
-- keep dependency references pointing at real task `source_gid` values in the same file
+- use unique `local_id` values for new tasks/subtasks that need dependency references
+- keep dependency references pointing at real task `source_gid` or `local_id` values in the same file
 - when deleting a task, also delete any dependency references to it
 - keep `format_version` unchanged
 - update `import.version_name_template` intentionally before import
+
+## Minimal V1 Example
+
+This is the basic shape for a brand-new template with no exported Asana gids:
+
+```json
+{
+  "format_version": 1,
+  "export_strategy": "manual_v1",
+  "template": {
+    "name": "New Template",
+    "description": "",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183269",
+    "requested_dates": []
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "New Template v1"
+  },
+  "sections": [
+    {
+      "name": "Planning",
+      "tasks": [
+        {
+          "name": "Draft plan",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "draft-plan",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Review plan",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "review-plan",
+          "dependency_refs": ["draft-plan"],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}
+```

@@ -63,12 +63,14 @@ Current managed fields:
 - ordered subtasks
 - task `resource_subtype`
 - task and subtask notes
-- dependency links represented as `dependency_source_gids`
+- dependency links represented as `dependency_source_gids` or `dependency_refs`
 
 Current intent:
 
 - `source_gid` preserves the original Asana object identity from the exported template snapshot
 - `dependency_source_gids` preserves dependency relationships between exported tasks
+- `local_id` can identify brand-new tasks or subtasks that have never existed in Asana
+- `dependency_refs` can point to either `source_gid` or `local_id`
 - `outline.md` is a readable generated view and is not intended to be edited as the import source
 
 Dependency note:
@@ -171,6 +173,7 @@ Behavior:
 Current note:
 
 - if the stored `template.workspace_gid` does not match an accessible real workspace gid, the importer falls back to resolving the workspace by `template.workspace_name`
+- for brand-new v1 templates, use `local_id` plus `dependency_refs` when you need dependencies before any Asana gids exist
 
 ## Tests
 
