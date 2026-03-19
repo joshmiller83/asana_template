@@ -108,7 +108,7 @@ Behavior:
 
 ### `download_template.py`
 
-Exports one template, or all visible templates, into local snapshot files under `exports/`.
+Exports one template, or all visible templates, into local snapshot files under `templates/`.
 
 ```bash
 python3 scripts/download_template.py 1213441914697823
@@ -124,7 +124,7 @@ Options:
 
 - `--all` to export all templates in the selected workspace
 - `--workspace-gid 1234567890` to target a specific workspace
-- `--output-dir path/to/exports` to change the output root
+- `--output-dir path/to/templates` to change the output root
 - `--date YYYY-MM-DD` to satisfy required template date variables during instantiation
 - `--keep-project` to retain the temporary instantiated project for inspection
 

@@ -156,7 +156,7 @@ def export_template(
             tasks.append(task)
 
         snapshot = build_editable_template(template, project, sections, tasks)
-        output_dir = output_root / f"{slugify(template['name'])}-{template['gid']}"
+        output_dir = output_root / slugify(template["name"])
         write_snapshot(output_dir, snapshot)
         return output_dir
     finally:
@@ -184,7 +184,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--output-dir",
-        default="exports",
+        default="templates",
         help="Directory where template snapshots will be written.",
     )
     parser.add_argument(
