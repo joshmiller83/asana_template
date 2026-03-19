@@ -52,6 +52,8 @@ This means import is expected to create a new versioned template rather than mut
 
 `template.json` is the source of truth for future imports.
 
+Detailed format guidance lives in [TEMPLATE_JSON_FORMAT.md](/Users/jomiller/Developer/github/joshmiller83/asana_template/TEMPLATE_JSON_FORMAT.md).
+
 Current managed fields:
 
 - template name and description
