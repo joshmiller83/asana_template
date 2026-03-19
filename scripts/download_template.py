@@ -2,7 +2,7 @@
 
 import argparse
 import json
-from datetime import date, datetime, timezone
+from datetime import date
 from pathlib import Path
 
 from asana_utils import (
@@ -16,6 +16,7 @@ from asana_utils import (
     slugify,
     wait_for_job,
 )
+from template_format import build_editable_template, build_requested_dates, render_outline, simplify_task
 
 
 def list_project_templates(token: str, workspace_gid: str) -> list[dict]:
@@ -41,21 +42,6 @@ def get_project_template(token: str, template_gid: str) -> dict:
         },
     )
     return payload["data"]
-
-
-def build_requested_dates(template: dict, fallback_date: str) -> list[dict]:
-    requested_dates = []
-    for requested_date in template.get("requested_dates", []):
-        requested_dates.append(
-            {
-                "gid": requested_date["gid"],
-                "name": requested_date.get("name"),
-                "description": requested_date.get("description"),
-                "value": fallback_date,
-            }
-        )
-    return requested_dates
-
 
 def instantiate_template(
     token: str,
@@ -114,6 +100,7 @@ def get_project_tasks(token: str, project_gid: str) -> list[dict]:
             "opt_fields": (
                 "gid,name,notes,resource_subtype,completed,parent.gid,parent.name,"
                 "memberships.project.gid,memberships.section.gid,memberships.section.name,"
+                "dependencies.gid,"
                 "created_at,modified_at"
             ),
         },
@@ -127,128 +114,11 @@ def get_subtasks(token: str, task_gid: str) -> list[dict]:
         {
             "opt_fields": (
                 "gid,name,notes,resource_subtype,completed,parent.gid,parent.name,"
+                "dependencies.gid,"
                 "created_at,modified_at"
             )
         },
     )
-
-
-def simplify_task(task: dict, subtasks: list[dict]) -> dict:
-    return {
-        "gid": task["gid"],
-        "name": task["name"],
-        "notes": task.get("notes", ""),
-        "resource_subtype": task.get("resource_subtype"),
-        "completed": task.get("completed", False),
-        "created_at": task.get("created_at"),
-        "modified_at": task.get("modified_at"),
-        "subtasks": [
-            {
-                "gid": subtask["gid"],
-                "name": subtask["name"],
-                "notes": subtask.get("notes", ""),
-                "resource_subtype": subtask.get("resource_subtype"),
-                "completed": subtask.get("completed", False),
-                "created_at": subtask.get("created_at"),
-                "modified_at": subtask.get("modified_at"),
-            }
-            for subtask in subtasks
-        ],
-    }
-
-
-def build_snapshot(template: dict, project: dict, sections: list[dict], tasks: list[dict]) -> dict:
-    section_index = [
-        {
-            "gid": section["gid"],
-            "name": section["name"],
-            "created_at": section.get("created_at"),
-            "tasks": [],
-        }
-        for section in sections
-    ]
-    section_tasks = {section["gid"]: section for section in section_index}
-    unsectioned_tasks: list[dict] = []
-
-    for task in tasks:
-        memberships = task.get("memberships") or []
-        section_gid = None
-        for membership in memberships:
-            section = membership.get("section")
-            if section and section.get("gid"):
-                section_gid = section["gid"]
-                break
-
-        simplified = task["snapshot_task"]
-        if section_gid and section_gid in section_tasks:
-            section_tasks[section_gid]["tasks"].append(simplified)
-        else:
-            unsectioned_tasks.append(simplified)
-
-    return {
-        "exported_at": datetime.now(timezone.utc).isoformat(),
-        "export_strategy": "instantiate_project_template",
-        "template": template,
-        "instantiated_project": project,
-        "sections": section_index,
-        "unsectioned_tasks": unsectioned_tasks,
-    }
-
-
-def render_outline(snapshot: dict) -> str:
-    lines = []
-    template = snapshot["template"]
-    project = snapshot["instantiated_project"]
-
-    lines.append(f"# {template['name']}")
-    lines.append("")
-    lines.append(f"- template_gid: `{template['gid']}`")
-    lines.append(f"- export_strategy: `{snapshot['export_strategy']}`")
-    lines.append(f"- instantiated_project_gid: `{project['gid']}`")
-
-    requested_dates = template.get("requested_dates") or []
-    if requested_dates:
-        values = ", ".join(
-            f"{requested_date['name']}={requested_date.get('value', 'export-date')}"
-            for requested_date in requested_dates
-        )
-        lines.append(f"- requested_dates: `{values}`")
-
-    lines.append("")
-
-    if template.get("description"):
-        lines.append("## Description")
-        lines.append("")
-        lines.append(template["description"])
-        lines.append("")
-
-    for section in snapshot["sections"]:
-        lines.append(f"## {section['name']}")
-        lines.append("")
-        if not section["tasks"]:
-            lines.append("_No tasks_")
-            lines.append("")
-            continue
-
-        for task in section["tasks"]:
-            lines.append(f"- {task['name']} `{task['gid']}`")
-            if task.get("notes"):
-                lines.append(f"  notes: {task['notes']}")
-            for subtask in task.get("subtasks", []):
-                lines.append(f"  - {subtask['name']} `{subtask['gid']}`")
-                if subtask.get("notes"):
-                    lines.append(f"    notes: {subtask['notes']}")
-        lines.append("")
-
-    if snapshot["unsectioned_tasks"]:
-        lines.append("## Unsectioned")
-        lines.append("")
-        for task in snapshot["unsectioned_tasks"]:
-            lines.append(f"- {task['name']} `{task['gid']}`")
-        lines.append("")
-
-    return "\n".join(lines).rstrip() + "\n"
-
 
 def write_snapshot(output_dir: Path, snapshot: dict) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -282,10 +152,10 @@ def export_template(
         for task in get_project_tasks(token, project_gid):
             if task.get("parent"):
                 continue
-            task["snapshot_task"] = simplify_task(task, get_subtasks(token, task["gid"]))
+            task["editable_task"] = simplify_task(task, get_subtasks(token, task["gid"]))
             tasks.append(task)
 
-        snapshot = build_snapshot(template, project, sections, tasks)
+        snapshot = build_editable_template(template, project, sections, tasks)
         output_dir = output_root / f"{slugify(template['name'])}-{template['gid']}"
         write_snapshot(output_dir, snapshot)
         return output_dir

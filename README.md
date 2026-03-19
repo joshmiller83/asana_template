@@ -48,6 +48,33 @@ Current working assumption:
 
 This means import is expected to create a new versioned template rather than mutate the original template GID in place.
 
+## Editable Snapshot Contract
+
+`template.json` is the source of truth for future imports.
+
+Current managed fields:
+
+- template name and description
+- requested date values used during export/import instantiation
+- ordered sections
+- ordered tasks within sections
+- ordered subtasks
+- task `resource_subtype`
+- task and subtask notes
+- dependency links represented as `dependency_source_gids`
+
+Current intent:
+
+- `source_gid` preserves the original Asana object identity from the exported template snapshot
+- `dependency_source_gids` preserves dependency relationships between exported tasks
+- `outline.md` is a readable generated view and is not intended to be edited as the import source
+
+Dependency note:
+
+- export now captures dependencies from the instantiated project snapshot
+- import will need a two-pass process: create all tasks first, then recreate dependency links once new Asana task IDs exist
+- the first import pass will target dependency recreation for exported tasks that already have `source_gid` relationships
+
 ## Scripts
 
 ### `list_project_templates.py`
@@ -91,6 +118,7 @@ Output:
 
 - `template.json` contains the structured snapshot
 - `outline.md` contains a readable outline of sections, tasks, and subtasks
+- task dependencies are preserved in `template.json` as `dependency_source_gids`
 
 Options:
 
@@ -114,5 +142,14 @@ Behavior:
 
 - the exporter instantiates a temporary project from the source template
 - it reads the project, sections, tasks, and subtasks through standard project APIs
+- it captures dependency links between tasks as source-task references
 - it writes a local snapshot
 - by default it deletes the temporary project when the export is complete
+
+## Tests
+
+Run the stdlib test suite with:
+
+```bash
+.venv/bin/python -m unittest discover -s tests
+```
