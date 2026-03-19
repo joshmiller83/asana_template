@@ -9,6 +9,7 @@ from scripts.import_template import (
     resolve_import_workspace_gid,
     task_reference_keys,
     validate_template_for_import,
+    wait_for_template_materialized,
 )
 
 
@@ -179,6 +180,17 @@ class ImportTemplateTests(unittest.TestCase):
         errors = validate_template_for_import(template_data)
         self.assertEqual(len(errors), 1)
         self.assertIn("reuses identifier", errors[0])
+
+    def test_wait_for_template_materialized_returns_template_when_available(self) -> None:
+        from unittest.mock import patch
+
+        with patch(
+            "scripts.import_template.asana_get",
+            return_value={"data": {"gid": "template-1", "name": "Example"}},
+        ):
+            template = wait_for_template_materialized("token", "template-1", timeout_seconds=0.1, poll_interval=0)
+
+        self.assertEqual(template["gid"], "template-1")
 
 
 if __name__ == "__main__":

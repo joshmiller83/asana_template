@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+import time
 from pathlib import Path
 
 try:
@@ -256,6 +257,36 @@ def save_project_as_template(
     return asana_post(f"/projects/{project_gid}/saveAsTemplate", token, payload)["data"]
 
 
+def wait_for_template_materialized(
+    token: str,
+    template_gid: str,
+    *,
+    timeout_seconds: float = 60.0,
+    poll_interval: float = 2.0,
+) -> dict:
+    deadline = time.monotonic() + timeout_seconds
+    last_error: RuntimeError | None = None
+
+    while time.monotonic() < deadline:
+        try:
+            return asana_get(f"/project_templates/{template_gid}", token, {"opt_fields": "gid,name"})[
+                "data"
+            ]
+        except RuntimeError as exc:
+            last_error = exc
+            time.sleep(poll_interval)
+
+    if last_error is not None:
+        raise RuntimeError(
+            "Timed out waiting for the new Asana template to materialize before cleanup. "
+            f"Last error: {last_error}"
+        )
+
+    raise RuntimeError(
+        "Timed out waiting for the new Asana template to materialize before cleanup."
+    )
+
+
 def initialize_sections(
     token: str, project_gid: str, template_data: dict
 ) -> tuple[list[dict], list[dict]]:
@@ -378,6 +409,12 @@ def import_template(
             template_data["import"]["version_name_template"],
             workspace_gid,
         )
+        new_template = job.get("new_project_template") or {}
+        if not new_template.get("gid"):
+            raise RuntimeError(
+                "Asana saveAsTemplate response did not include new_project_template.gid."
+            )
+        wait_for_template_materialized(token, new_template["gid"])
         return project, job
     finally:
         if not keep_project:
