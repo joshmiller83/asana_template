@@ -81,6 +81,9 @@ def validate_template_for_import(template_data: dict) -> list[str]:
     if not template_block.get("workspace_gid"):
         errors.append("template.workspace_gid is required.")
 
+    if not template_block.get("team_gid"):
+        errors.append("template.team_gid is required.")
+
     if not import_block.get("version_name_template"):
         errors.append("import.version_name_template is required.")
 
@@ -249,10 +252,10 @@ def add_dependencies(token: str, task_gid: str, dependency_gids: list[str]) -> N
 
 
 def save_project_as_template(
-    token: str, project_gid: str, name: str, workspace_gid: str
+    token: str, project_gid: str, name: str, workspace_gid: str, team_gid: str
 ) -> dict:
     payload = {
-        "data": {"name": name, "public": False, "workspace": workspace_gid}
+        "data": {"name": name, "public": False, "workspace": workspace_gid, "team": team_gid}
     }
     return asana_post(f"/projects/{project_gid}/saveAsTemplate", token, payload)["data"]
 
@@ -403,11 +406,13 @@ def import_template(
 
     try:
         workspace_gid = resolve_import_workspace_gid(token, template_data)
+        team_gid = template_data["template"]["team_gid"]
         job = save_project_as_template(
             token,
             project["gid"],
             template_data["import"]["version_name_template"],
             workspace_gid,
+            team_gid,
         )
         new_template = job.get("new_project_template") or {}
         if not new_template.get("gid"):
