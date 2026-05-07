@@ -8,11 +8,12 @@
     "source_gid": "1213546897782557",
     "workspace_name": "My workspace",
     "workspace_gid": "1213372574183271",
+    "team_gid": "1213372574183271",
     "requested_dates": []
   },
   "import": {
     "mode": "create_new_versioned_template",
-    "version_name_template": "Deployment Task v2",
+    "version_name_template": "Deployment Task v3",
     "source_template_gid": "1213546897782557"
   },
   "instantiated_project": {
@@ -30,7 +31,7 @@
       "source_gid": "1213752357344808",
       "tasks": [
         {
-          "name": "Jira ticket created in RT1 stream \u2014 format: SiteName: Deployment, date/time ET, PRs listed",
+          "name": "Jira ticket created in RT1 stream — format: SiteName: Deployment, date/time ET, PRs listed",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213752650515580",
@@ -48,11 +49,11 @@
       ]
     },
     {
-      "name": "Planning",
+      "name": "Pre-Deployment",
       "source_gid": "1213752357344810",
       "tasks": [
         {
-          "name": "Deployment date/time confirmed \u2014 avoid high-traffic events, conferences, and VIP access windows",
+          "name": "Confirm deployment date and time with product manager or stakeholders",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213752650515595",
@@ -60,61 +61,56 @@
           "subtasks": []
         },
         {
-          "name": "Confirm the day after deployment is not a public holiday",
+          "name": "Notify team of upcoming deployment plan via Slack or email (not both) — include all tickets in notification",
           "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": "1213752650515590",
-          "dependency_source_gids": [],
-          "subtasks": []
-        },
-        {
-          "name": "Pre-deployment notification sent 2\u20133 days ahead and day-of to standard distribution list",
-          "notes": "Standard distribution: Josh Miller, David Connell, Sam Cressman, Jerry Ta, David Hislop, WebDev Team",
           "resource_subtype": "default_task",
           "source_gid": "1213752650515600",
           "dependency_source_gids": [],
           "subtasks": []
         },
         {
-          "name": "If high-profile/high-traffic site: extended distribution notified and Pantheon support ticket opened",
-          "notes": "Extended distribution: Graham MacDonald, Jess Kelly, Bob Broughman. Pantheon ticket should request extra vigilance during the deployment window.",
+          "name": "Download latest Live database from Pantheon and import locally",
+          "notes": "Command: `lando db-import live.site_name.database.sql.gz`",
           "resource_subtype": "default_task",
-          "source_gid": "1213752357350732",
-          "dependency_source_gids": [],
+          "source_gid": null,
+          "local_id": "download-live-db",
+          "dependency_refs": [],
           "subtasks": []
         },
         {
-          "name": "Confirmed backup person available for after hours deployment",
+          "name": "Export config locally and review active config changes carefully",
+          "notes": "Command: `lando drush cex`",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "export-config-locally",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Commit only intended config updates and deploy to Dev/Test environment",
           "notes": "",
           "resource_subtype": "default_task",
-          "source_gid": "1213752650480353",
-          "dependency_source_gids": [],
+          "source_gid": null,
+          "local_id": "commit-config-updates",
+          "dependency_refs": [],
           "subtasks": []
         }
       ]
     },
     {
-      "name": "Executing",
-      "source_gid": "1213754562694713",
+      "name": "Testing (Pre-Deployment)",
+      "source_gid": null,
       "tasks": [
         {
-          "name": "Latest config exported from Live, compared, committed, and merged to main via PR",
-          "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": "1213752357350727",
-          "dependency_source_gids": [],
-          "subtasks": []
-        },
-        {
-          "name": "Latest Live database cloned to Test environment",
-          "notes": "",
+          "name": "Sync latest Live database to Test environment",
+          "notes": "Confirm the Test database can be overwritten before proceeding.",
           "resource_subtype": "default_task",
           "source_gid": "1213752357350742",
           "dependency_source_gids": [],
           "subtasks": []
         },
         {
-          "name": "Features QC'd on Dev/Test; admin and content menus spot-checked",
+          "name": "Test on Test environment (recommended over Dev to avoid unintended code merges)",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213752357350747",
@@ -122,15 +118,21 @@
           "subtasks": []
         },
         {
-          "name": "Diffy VRT run between Test and Live \u2014 screenshots reviewed and marked complete",
+          "name": "Run Diffy VRT via Diffy dashboard — confirm no unexpected visual changes",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754295091945",
           "dependency_source_gids": [],
           "subtasks": []
-        },
+        }
+      ]
+    },
+    {
+      "name": "Deployment",
+      "source_gid": "1213754562694713",
+      "tasks": [
         {
-          "name": "Live site backup created on Pantheon (database minimum, full backup preferred)",
+          "name": "Create Live site backup in Pantheon (database minimum, full backup preferred)",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213754295091951",
@@ -138,18 +140,27 @@
           "subtasks": []
         },
         {
-          "name": "Site in maintenance mode \u2014 confirm Web Transactions Time graph has settled before proceeding",
+          "name": "Open New Relic dashboard",
           "notes": "",
           "resource_subtype": "default_task",
-          "source_gid": "1213754295091963",
+          "source_gid": "1213754295091957",
           "dependency_source_gids": [],
           "subtasks": []
         },
         {
-          "name": "Deploy log on Pantheon updated with PRs included",
+          "name": "(Optional) Open Pantheon support ticket for high-risk deployments",
           "notes": "",
           "resource_subtype": "default_task",
-          "source_gid": "1213754295091969",
+          "source_gid": null,
+          "local_id": "optional-pantheon-ticket",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Enable maintenance mode — wait 1–2 minutes for traffic to drop in New Relic",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": "1213754295091963",
           "dependency_source_gids": [],
           "subtasks": []
         },
@@ -162,23 +173,75 @@
           "subtasks": []
         },
         {
-          "name": "Configs imported (automatic or manual depending on site) and cache cleared",
-          "notes": "",
+          "name": "Run post-deploy drush commands and clear cache",
+          "notes": "terminus drush <site>.live updb -y  # if needed\nterminus drush <site>.live cim -y  # if needed\nterminus drush <site>.live cr",
           "resource_subtype": "default_task",
           "source_gid": "1213753868341677",
           "dependency_source_gids": [],
           "subtasks": []
-        },
+        }
+      ]
+    },
+    {
+      "name": "Testing (Post-Deployment)",
+      "source_gid": null,
+      "tasks": [
         {
-          "name": "Any deployment-specific tasks completed (node creation, content configuration, etc.)",
+          "name": "Check Status Report",
           "notes": "",
           "resource_subtype": "default_task",
-          "source_gid": "1213753868341695",
-          "dependency_source_gids": [],
+          "source_gid": null,
+          "local_id": "check-status-report",
+          "dependency_refs": [],
           "subtasks": []
         },
         {
-          "name": "Site taken off maintenance mode",
+          "name": "Check Recent Log Messages",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "check-log-messages",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Verify search indexing",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "verify-search-indexing",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Verify GTM tracking",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "verify-gtm-tracking",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Test key pages, navigation, and newsletter forms",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "test-key-pages",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Confirm admin UI works",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "confirm-admin-ui",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Disable maintenance mode",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213753868341701",
@@ -188,33 +251,11 @@
       ]
     },
     {
-      "name": "Monitoring & Controlling",
-      "source_gid": null,
-      "tasks": [
-        {
-          "name": "New Relic open; status report and log messages reviewed for anomalies",
-          "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": "1213754295091957",
-          "dependency_source_gids": [],
-          "subtasks": []
-        },
-        {
-          "name": "Deployment still on scope and on track \u2014 any active issues escalated before they compound",
-          "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": null,
-          "dependency_source_gids": [],
-          "subtasks": []
-        }
-      ]
-    },
-    {
-      "name": "Closing",
+      "name": "Post-Deployment",
       "source_gid": "1213754562694715",
       "tasks": [
         {
-          "name": "Team notified \u2014 features deployed and maintenance window duration included",
+          "name": "Notify team deployment is complete — include tickets deployed and downtime duration (if relevant)",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213752650421176",
@@ -222,18 +263,19 @@
           "subtasks": []
         },
         {
+          "name": "Monitor New Relic and confirm site throughput returns to normal",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "source_gid": null,
+          "local_id": "monitor-new-relic",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
           "name": "Jira ticket status updated to Done",
           "notes": "",
           "resource_subtype": "default_task",
           "source_gid": "1213752650421181",
-          "dependency_source_gids": [],
-          "subtasks": []
-        },
-        {
-          "name": "Any issues logged immediately \u2014 Pantheon ticket raised if infrastructure-related",
-          "notes": "",
-          "resource_subtype": "default_task",
-          "source_gid": "1213752650480358",
           "dependency_source_gids": [],
           "subtasks": []
         }
