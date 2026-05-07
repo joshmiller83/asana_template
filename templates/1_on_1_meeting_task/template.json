@@ -1,0 +1,233 @@
+{
+  "format_version": 1,
+  "export_strategy": "manual_v1",
+  "template": {
+    "name": "1:1 Meeting Task",
+    "description": "Bi-weekly supervisor checklist for preparing, running, and closing a 1:1 with Farnoosh. The supervisee should drive the agenda — this template ensures the manager's responsibilities don't fall through the cracks, and documents evidence against G2, G3, and G5.",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183271",
+    "team_gid": "1213372574183271",
+    "requested_dates": []
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "1:1 Meeting Task v1"
+  },
+  "sections": [
+    {
+      "name": "Initiating",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Confirm the meeting is scheduled and will happen",
+          "notes": "The PIP requires a consistent biweekly cadence. A meeting that doesn't happen is a documented gap — not a neutral event. If Farnoosh is unavailable, reschedule proactively rather than letting it lapse. Note any schedule changes in your running reflection doc.",
+          "resource_subtype": "default_task",
+          "local_id": "confirm-meeting",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Review action items from the last meeting",
+          "notes": "What was completed? What is carrying forward? Are any overdue items a signal worth discussing — workload, prioritization, or something else?",
+          "resource_subtype": "default_task",
+          "local_id": "review-action-items",
+          "dependency_refs": ["confirm-meeting"],
+          "subtasks": []
+        },
+        {
+          "name": "Complete and send written reflection from the last meeting to Jess",
+          "notes": "This is a PIP requirement confirmed in the Feb 27 1:1. It is a private running document sent to Jess, not shared with Farnoosh. Reflect on how the last meeting went: what you did well as a supervisor, what you'd do differently, and how the relationship is progressing. Brief is fine — a paragraph is enough. Send before this meeting happens so Jess has visibility into the cycle.",
+          "resource_subtype": "default_task",
+          "local_id": "written-reflection",
+          "dependency_refs": ["review-action-items"],
+          "subtasks": []
+        },
+        {
+          "name": "Note your own items for this cycle",
+          "notes": "Keep this to one or two things. Appropriate topics: Farnoosh's development, workload, team dynamics, organizational context, PIP-related coaching. Not appropriate here: project decisions, code feedback, detailed status updates — those belong in other meetings.",
+          "resource_subtype": "default_task",
+          "local_id": "manager-items",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Consider the relationship itself",
+          "notes": "Is the cadence holding? Is feedback flowing both directions? Is Farnoosh bringing real topics, or is the meeting feeling performative? The PIP's success is being evaluated partly on whether Farnoosh feels supported and whether this relationship is genuinely functional — not just whether meetings are occurring.",
+          "resource_subtype": "default_task",
+          "local_id": "relationship-check",
+          "dependency_refs": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Planning",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Confirm Farnoosh is preparing the agenda",
+          "notes": "She should own agenda prep and share it at least a few hours in advance. If this isn't happening consistently, address it directly — it's part of what a healthy supervisory relationship looks like on her side. Note it in your reflection if it's a pattern.",
+          "resource_subtype": "default_task",
+          "local_id": "confirm-agenda-prep",
+          "dependency_refs": ["review-action-items", "manager-items"],
+          "subtasks": []
+        },
+        {
+          "name": "Identify where you might be tempted to direct rather than ask",
+          "notes": "G2 is active listening; G5 is coaching without undermining ownership. Both require intentional preparation, not just good intentions in the moment. Before the meeting, identify one or two topics on the agenda where your instinct might be to solve or correct — and plan to ask a question instead. The Management Center's probing questions resource is useful here.",
+          "resource_subtype": "default_task",
+          "local_id": "prepare-to-listen",
+          "dependency_refs": ["confirm-agenda-prep"],
+          "subtasks": []
+        },
+        {
+          "name": "Draft any written feedback you plan to give",
+          "notes": "Per the SBI+QR framework: Situation, Behavior, Impact, then a Question or Request. Written feedback should be shared before the meeting. If this is a light cycle with no substantive feedback, be honest about whether feedback is actually overdue rather than just deferred for comfort.",
+          "resource_subtype": "default_task",
+          "local_id": "draft-written-feedback",
+          "dependency_refs": ["relationship-check"],
+          "subtasks": []
+        },
+        {
+          "name": "Send written feedback to Farnoosh ahead of the meeting",
+          "notes": "Give her enough time to read and reflect before you discuss it. Same-morning delivery is better than nothing, but earlier is better.",
+          "resource_subtype": "default_task",
+          "local_id": "send-written-feedback",
+          "dependency_refs": ["draft-written-feedback", "confirm-agenda-prep"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Executing",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Personal check-in, if appropriate",
+          "notes": "Optional but often worth a minute. Highs and lows. Read the room.",
+          "resource_subtype": "default_task",
+          "local_id": "personal-checkin",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Farnoosh leads her agenda items — your role is to listen and ask",
+          "notes": "G2 and G5 evidence lives here. Ask probing questions rather than providing answers. When she has worked through a topic, reflect it back: 'it sounds like you know the next step' is more useful than telling her what to do. Notice when you're tempted to direct — that's the moment to ask instead. FYI items go quickly; discussion items get real space.",
+          "resource_subtype": "default_task",
+          "local_id": "supervisee-agenda",
+          "dependency_refs": ["personal-checkin"],
+          "subtasks": []
+        },
+        {
+          "name": "G5 check during her agenda — are you preserving her ownership?",
+          "notes": "At least once during the meeting, pause and ask yourself: am I acting as a sounding board, or have I started solving? If you've given more than one directive answer in a row, redirect back to a question. This is the specific pattern the PIP names — coaching that inadvertently pulls ownership back toward you.",
+          "resource_subtype": "default_task",
+          "local_id": "g5-check",
+          "dependency_refs": ["supervisee-agenda"],
+          "subtasks": []
+        },
+        {
+          "name": "Manager's items — hold to one or two",
+          "notes": "Appropriate: development, workload, team dynamics, organizational context, anything that connects to her growth or the health of the team. Not appropriate: code review, project architecture, detailed status. If you have more than two items, prioritize — the meeting's value comes from her agenda, not yours.",
+          "resource_subtype": "default_task",
+          "local_id": "manager-agenda",
+          "dependency_refs": ["g5-check"],
+          "subtasks": []
+        },
+        {
+          "name": "Feedback discussion",
+          "notes": "Discuss the written feedback you sent ahead of the meeting. Give Farnoosh space to respond. Ask for her feedback on you as well — the relationship requires this to go both directions, and it's a documented success criterion. Use the Feedback & Learning structure if helpful: one success and one area for improvement from each side.",
+          "resource_subtype": "default_task",
+          "local_id": "feedback-discussion",
+          "dependency_refs": ["manager-agenda"],
+          "subtasks": []
+        },
+        {
+          "name": "Agree on action items",
+          "notes": "Capture these in the meeting. Each item should have an owner and enough specificity to be checkable at the next meeting. Items that belong to Farnoosh stay with Farnoosh — don't absorb them.",
+          "resource_subtype": "default_task",
+          "local_id": "agree-action-items",
+          "dependency_refs": ["feedback-discussion"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring & Controlling",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Is the biweekly cadence holding without gaps?",
+          "notes": "Consistent cadence is a PIP requirement, not a preference. A lapsed meeting needs to be documented and rescheduled — not quietly absorbed. If the pattern is slipping, surface it to Jess proactively rather than hoping it goes unnoticed.",
+          "resource_subtype": "default_task",
+          "local_id": "mc-cadence",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Is feedback flowing in both directions, and is it timely?",
+          "notes": "Jess is watching for this specifically. If cycles are passing without substantive feedback in either direction, something is off. Stale feedback is harder to receive and less useful as evidence.",
+          "resource_subtype": "default_task",
+          "local_id": "mc-feedback-flow",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Are 1:1 topics staying in scope?",
+          "notes": "Project decisions, code review, and detailed status updates belong elsewhere. If these keep appearing, name it and redirect. The supervisor-supervisee doc is explicit that both parties are responsible for keeping the meeting in bounds.",
+          "resource_subtype": "default_task",
+          "local_id": "mc-scope-check",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Does Farnoosh feel supported?",
+          "notes": "This is a primary success criterion in the PIP — Graham was explicit that the evaluation is based on documented materials and feedback from multiple sources, not any single person's opinion. If you are unsure whether she feels supported, ask directly. If the answer is no or uncertain, that's a signal for your written reflection and potentially a conversation with Jess.",
+          "resource_subtype": "default_task",
+          "local_id": "mc-supervisee-supported",
+          "dependency_refs": [],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Closing",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Action items logged with owners in the running notes doc",
+          "notes": "Add in reverse chronological order at the top. Each item should be clearly owned and specific enough to check at the next meeting. Items that belong to Farnoosh stay with her.",
+          "resource_subtype": "default_task",
+          "local_id": "log-action-items",
+          "dependency_refs": ["agree-action-items"],
+          "subtasks": []
+        },
+        {
+          "name": "Notes filed in the running doc",
+          "notes": "Key discussion points, decisions, and any feedback given or received. Brief is fine — this is a reference, not a transcript.",
+          "resource_subtype": "default_task",
+          "local_id": "file-notes",
+          "dependency_refs": ["log-action-items"],
+          "subtasks": []
+        },
+        {
+          "name": "Any follow-on tasks or separate meetings created",
+          "notes": "If something came up that belongs in a project meeting, a Jira ticket, or a separate conversation with additional stakeholders, create it now while it's fresh.",
+          "resource_subtype": "default_task",
+          "local_id": "follow-on-tasks",
+          "dependency_refs": ["file-notes"],
+          "subtasks": []
+        },
+        {
+          "name": "Begin written reflection for Jess",
+          "notes": "Start it now while the meeting is fresh — even a few notes is enough to finish later. Cover: what went well as a supervisor, what you'd do differently, how the relationship is progressing, and anything you noticed about your own listening and coaching posture. This feeds into Initiating for the next cycle. It is a PIP deliverable.",
+          "resource_subtype": "default_task",
+          "local_id": "begin-reflection",
+          "dependency_refs": ["file-notes"],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}
