@@ -1,0 +1,289 @@
+{
+  "format_version": 1,
+  "export_strategy": "manual_v1",
+  "template": {
+    "name": "Technical Review",
+    "description": "Structured checklist for code reviews, pre-launch reviews, architecture reviews, accessibility audits, security evaluations, and similar technical evaluations.",
+    "workspace_name": "My workspace",
+    "workspace_gid": "1213372574183271",
+    "team_gid": "1213372574183271",
+    "requested_dates": []
+  },
+  "import": {
+    "mode": "create_new_versioned_template",
+    "version_name_template": "Technical Review v1"
+  },
+  "sections": [
+    {
+      "name": "Initiating",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Jira ticket exists, is assigned, and reflects current status",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "jira-ticket-exists",
+          "dependency_refs": [],
+          "subtasks": []
+        },
+        {
+          "name": "Type of review is explicitly identified",
+          "notes": "e.g., code review, pre-launch, architecture, accessibility, security",
+          "resource_subtype": "default_task",
+          "local_id": "review-type-identified",
+          "dependency_refs": ["jira-ticket-exists"],
+          "subtasks": []
+        },
+        {
+          "name": "Artifact or deliverable under review is identified and linked or accessible",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "artifact-identified",
+          "dependency_refs": ["jira-ticket-exists"],
+          "subtasks": []
+        },
+        {
+          "name": "Reviewer(s) are assigned and aware of the assignment",
+          "notes": "Assigned specifically — not just \"available\".",
+          "resource_subtype": "default_task",
+          "local_id": "reviewer-assigned",
+          "dependency_refs": ["artifact-identified"],
+          "subtasks": []
+        },
+        {
+          "name": "Review is authorized",
+          "notes": "The work is at a stage where review is appropriate and expected.",
+          "resource_subtype": "default_task",
+          "local_id": "review-authorized",
+          "dependency_refs": ["reviewer-assigned"],
+          "subtasks": []
+        },
+        {
+          "name": "Review scope is bounded",
+          "notes": "State up front what is and is not being evaluated.",
+          "resource_subtype": "default_task",
+          "local_id": "review-scope-defined",
+          "dependency_refs": ["review-type-identified", "review-authorized"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Planning",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Acceptance criteria are defined",
+          "notes": "What does a passing review look like?",
+          "resource_subtype": "default_task",
+          "local_id": "acceptance-criteria-defined",
+          "dependency_refs": ["review-scope-defined"],
+          "subtasks": []
+        },
+        {
+          "name": "Review is scoped against documented requirements",
+          "notes": "Not against personal preference or convention alone.",
+          "resource_subtype": "default_task",
+          "local_id": "scope-vs-requirements",
+          "dependency_refs": ["acceptance-criteria-defined"],
+          "subtasks": []
+        },
+        {
+          "name": "Access to required environments, branches, staging, or artifacts is confirmed",
+          "notes": "Confirm access before starting — not mid-review.",
+          "resource_subtype": "default_task",
+          "local_id": "access-confirmed",
+          "dependency_refs": ["review-scope-defined"],
+          "subtasks": []
+        },
+        {
+          "name": "Dependencies are noted",
+          "notes": "e.g., specific browsers, device types, data sets, third-party integrations",
+          "resource_subtype": "default_task",
+          "local_id": "dependencies-noted",
+          "dependency_refs": ["scope-vs-requirements"],
+          "subtasks": []
+        },
+        {
+          "name": "At least one known risk or concern is identified before review begins",
+          "notes": "What are you specifically looking for?",
+          "resource_subtype": "default_task",
+          "local_id": "risk-identified",
+          "dependency_refs": ["scope-vs-requirements"],
+          "subtasks": []
+        },
+        {
+          "name": "Time window for the review is established and communicated",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "time-window-established",
+          "dependency_refs": ["dependencies-noted", "risk-identified", "access-confirmed"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Executing",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Review is conducted against the stated scope and acceptance criteria",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "conduct-review",
+          "dependency_refs": ["time-window-established"],
+          "subtasks": []
+        },
+        {
+          "name": "Findings are documented as they are identified",
+          "notes": "Not reconstructed from memory afterward.",
+          "resource_subtype": "default_task",
+          "local_id": "document-findings",
+          "dependency_refs": ["conduct-review"],
+          "subtasks": []
+        },
+        {
+          "name": "Each finding is tagged with a severity or priority level",
+          "notes": "blocking, major, minor, or suggestion",
+          "resource_subtype": "default_task",
+          "local_id": "tag-findings-severity",
+          "dependency_refs": ["document-findings"],
+          "subtasks": []
+        },
+        {
+          "name": "Findings distinguish between required changes and recommendations",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "distinguish-required-vs-recommendations",
+          "dependency_refs": ["tag-findings-severity"],
+          "subtasks": []
+        },
+        {
+          "name": "Questions are surfaced to the original author",
+          "notes": "Do not assume or guess — ask.",
+          "resource_subtype": "default_task",
+          "local_id": "surface-questions",
+          "dependency_refs": ["conduct-review"],
+          "subtasks": []
+        },
+        {
+          "name": "No out-of-scope changes are introduced during the review",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "no-out-of-scope-changes",
+          "dependency_refs": ["conduct-review"],
+          "subtasks": []
+        },
+        {
+          "name": "Accessibility, performance, or security concerns are flagged explicitly if relevant",
+          "notes": "Flag explicitly — do not let these get absorbed into general findings without a label.",
+          "resource_subtype": "default_task",
+          "local_id": "flag-a11y-perf-security",
+          "dependency_refs": ["document-findings"],
+          "subtasks": []
+        },
+        {
+          "name": "Cross-browser or cross-device behavior is checked where applicable",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "cross-browser-check",
+          "dependency_refs": ["conduct-review"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring & Controlling",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "Open findings are tracked to resolution, not just logged",
+          "notes": "Runs alongside Executing — not a one-time gate.",
+          "resource_subtype": "default_task",
+          "local_id": "track-findings-to-resolution",
+          "dependency_refs": ["document-findings"],
+          "subtasks": []
+        },
+        {
+          "name": "Fixes are verified against the original finding",
+          "notes": "Confirm the issue is resolved, not just changed.",
+          "resource_subtype": "default_task",
+          "local_id": "verify-fixes",
+          "dependency_refs": ["track-findings-to-resolution"],
+          "subtasks": []
+        },
+        {
+          "name": "Significant revisions trigger a re-review of the affected area",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "trigger-re-review",
+          "dependency_refs": ["verify-fixes"],
+          "subtasks": []
+        },
+        {
+          "name": "Scope drift is watched for",
+          "notes": "New issues introduced during revision go back through the finding process.",
+          "resource_subtype": "default_task",
+          "local_id": "watch-scope-drift",
+          "dependency_refs": ["track-findings-to-resolution"],
+          "subtasks": []
+        },
+        {
+          "name": "Review timeline is monitored",
+          "notes": "If it's slipping, surface it — don't absorb silently.",
+          "resource_subtype": "default_task",
+          "local_id": "monitor-timeline",
+          "dependency_refs": ["track-findings-to-resolution"],
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "name": "Closing",
+      "source_gid": null,
+      "tasks": [
+        {
+          "name": "All findings are resolved or formally accepted with documented rationale",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "resolve-all-findings",
+          "dependency_refs": ["verify-fixes", "distinguish-required-vs-recommendations"],
+          "subtasks": []
+        },
+        {
+          "name": "Approval is documented in Jira",
+          "notes": "Not just communicated verbally.",
+          "resource_subtype": "default_task",
+          "local_id": "document-approval-jira",
+          "dependency_refs": ["resolve-all-findings"],
+          "subtasks": []
+        },
+        {
+          "name": "Items deferred out of scope have follow-on tickets created",
+          "notes": "Create tickets with clear descriptions — do not lose track of deferred items.",
+          "resource_subtype": "default_task",
+          "local_id": "create-followon-tickets",
+          "dependency_refs": ["resolve-all-findings"],
+          "subtasks": []
+        },
+        {
+          "name": "Status updated to Done in Jira",
+          "notes": "Or appropriate terminal state.",
+          "resource_subtype": "default_task",
+          "local_id": "update-status-done",
+          "dependency_refs": ["document-approval-jira", "create-followon-tickets"],
+          "subtasks": []
+        },
+        {
+          "name": "One-sentence lessons learned or retrospective note logged in the ticket",
+          "notes": "",
+          "resource_subtype": "default_task",
+          "local_id": "lessons-learned",
+          "dependency_refs": ["update-status-done"],
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "unsectioned_tasks": []
+}
